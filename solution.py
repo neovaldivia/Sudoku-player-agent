@@ -42,24 +42,26 @@ def naked_twins(values):
     """Eliminate values using the naked twins strategy.
     Args:
         values(dict): a dictionary of the form {'box_name': '123456789', ...}
-
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
-
     # Find lists of boxes in the same *unit, with *len()=2 
     unit_boxes_2digits = [[box for box in unit if len(values[box]) == 2] for unit in unitlist]
-    #print(unit_boxes_2digits)
+    print(unit_boxes_2digits)
+    #Using sample1 generates: [[], [], ['C9'], [], ['E8'], [], ['G8'], ['H8'], ['I8'], [], [], [], [], [], [], [], ['E8', 'G8', 'H8', 'I8'], ['C9'], [], [], ['C9'], [], [], ['E8'], [], [], ['G8', 'H8', 'I8'], ['H8'], []]
     
-    #only units with 2 boxes presenting 2 digits can be twins if they have the same digits
-    unit_2boxes_2digits = [i for i in unit_boxes_2digits if len(i)==2]
-    #print(unit_2boxes_2digits)
+    #we should NOT eliminate boxes lists with #boxes with 2-digit values > 2
+    unit_over2boxes_2digits = [i for i in unit_boxes_2digits if len(i)>1]
+    print(unit_over2boxes_2digits)
+    #generates = [['E8', 'G8', 'H8', 'I8'], ['G8', 'H8', 'I8']]
+        
+    #Now we need to iterate over each unit_boxes list to find equal values
+    naked_twins = [[i for i in unit_boxes if values[i]==values[i+1]] for unit_boxes in unit_over2boxes_2digits]
+    print(naked_twins) 
+    #generates = TypeError: must be str, not int
     
-    #Now we need to compare values
-    naked_twins = [i for i in unit_2boxes_2digits if values[i[0]]==values[i[1]]]
-    #print(naked_twins)
-            
     # Eliminate the naked twins as possibilities for their peers
+    
     for box1,box2 in naked_twins:
         digits = values[box1]
         common_peers = list(peers[box1] & peers[box2])
@@ -67,7 +69,7 @@ def naked_twins(values):
             if len(values[peer])>1 and peer!=box1 and peer!=box2:
                 values[peer]= values[peer].replace(digits[0],'')
                 values[peer]= values[peer].replace(digits[1],'')
-
+    
     return values
        
 
