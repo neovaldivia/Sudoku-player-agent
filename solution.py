@@ -49,38 +49,27 @@ def naked_twins(values):
 
     # Find lists of boxes in the same *unit, with *len()=2 
     unit_boxes_2digits = [[box for box in unit if len(values[box]) == 2] for unit in unitlist]
-    print(unit_boxes_2digits)
-    #Using sample1 generates: [['A7'], ['B4', 'B7'], ['C1', 'C5'], ['D7'], ['E2'], ['F3', 'F7'], [], ['H4', 'H6'], ['I1', 'I3'], ['C1', 'I1'], ['E2'], ['F3', 'I3'], ['B4', 'H4'], ['C5'], ['H6'], ['A7', 'B7', 'D7', 'F7'], [], [], ['C1'], ['B4', 'C5'], ['A7', 'B7'], ['E2', 'F3'], [], ['D7', 'F7'], ['I1', 'I3'], ['H4', 'H6'], [], [], ['I1']]
+    #print(unit_boxes_2digits)
     
     #only units with 2 boxes presenting 2 digits can be twins if they have the same digits
     unit_2boxes_2digits = [i for i in unit_boxes_2digits if len(i)==2]
-    print(unit_2boxes_2digits)
-    #generates = [['B4', 'B7'], ['C1', 'C5'], ['F3', 'F7'], ['H4', 'H6'], ['I1', 'I3'], ['C1', 'I1'], ['F3', 'I3'], ['B4', 'H4'], ['B4', 'C5'], ['A7', 'B7'], ['E2', 'F3'], ['D7', 'F7'], ['I1', 'I3'], ['H4', 'H6']]
+    #print(unit_2boxes_2digits)
     
     #Now we need to compare values
     naked_twins = [i for i in unit_2boxes_2digits if values[i[0]]==values[i[1]]]
-    print(naked_twins)
-    #generates = [['B4', 'B7'], ['H4', 'H6'], ['I1', 'I3'], ['C1', 'I1'], ['F3', 'I3'], ['A7', 'B7'], ['I1', 'I3'], ['H4', 'H6']]
-    
-    naked_values=[values[i[0]] for i in naked_twins]
-    print(naked_values)
-    #generates ['27', '17', '23', '23', '23', '27', '23', '17']
-    
+    #print(naked_twins)
+            
     # Eliminate the naked twins as possibilities for their peers
-    for i in naked_twins:
-        digits = values[i[0]]#then get those digits like '23'
-        for unit in unitlist:
-            if i[0] and i[1] in unit:
-                # for those boxes in the unit the twins share
-                for box in unit:
-                    if len(values[box])>1 and box!=i[0] and box!=i[1]:
-                        print(digits)
-                        values[box] = values[box].replace(digits[0],'') #remove any of the digits from boxes in unit
-                        values[box] = values[box].replace(digits[1],'') #IndexError: string index out of range #Ooops
+    for box1,box2 in naked_twins:
+        digits = values[box1]
+        common_peers = list(peers[box1] & peers[box2])
+        for peer in common_peers:
+            if len(values[peer])>1 and peer!=box1 and peer!=box2:
+                values[peer]= values[peer].replace(digits[0],'')
+                values[peer]= values[peer].replace(digits[1],'')
 
     return values
-    
-    
+       
 
 
 def grid_values(grid):
