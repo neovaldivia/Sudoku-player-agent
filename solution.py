@@ -46,19 +46,19 @@ def naked_twins(values):
         the values dictionary with the naked twins eliminated from peers.
     """
     # Find lists of boxes in the same *unit, with *len()=2 
-    unit_boxes_2digits = [[box for box in unit if len(values[box]) == 2] for unit in unitlist]
+  
+    unit_boxes_2digits = [box for box in values.keys() if len(values[box])==2]
     print(unit_boxes_2digits)
-    #Using sample1 generates: [[], [], ['C9'], [], ['E8'], [], ['G8'], ['H8'], ['I8'], [], [], [], [], [], [], [], ['E8', 'G8', 'H8', 'I8'], ['C9'], [], [], ['C9'], [], [], ['E8'], [], [], ['G8', 'H8', 'I8'], ['H8'], []]
+    #Using sample1 generates: ['G8', 'C9', 'I8', 'E8', 'H8']
+
+    naked_twins=[]
+    for box in unit_boxes_2digits:
+        for peer in peers[box]:
+            if values[peer]==values[box]:
+                naked_twins.append([peer,box])
     
-    #we should NOT eliminate boxes lists with #boxes with 2-digit values > 2
-    unit_over2boxes_2digits = [i for i in unit_boxes_2digits if len(i)>1]
-    print(unit_over2boxes_2digits)
-    #generates = [['E8', 'G8', 'H8', 'I8'], ['G8', 'H8', 'I8']]
-        
-    #Now we need to iterate over each unit_boxes list to find equal values
-    naked_twins = [[i for i in unit_boxes if values[i]==values[i+1]] for unit_boxes in unit_over2boxes_2digits]
     print(naked_twins) 
-    #generates = TypeError: must be str, not int
+    #generates
     
     # Eliminate the naked twins as possibilities for their peers
     
@@ -71,6 +71,7 @@ def naked_twins(values):
                 values[peer]= values[peer].replace(digits[1],'')
     
     return values
+
        
 
 
